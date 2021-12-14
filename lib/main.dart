@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tesina/src/ui/auth/welcomePage.dart';
 import 'package:tesina/src/ui/cases/casesMap.dart';
@@ -15,6 +16,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate
+      ],
+      supportedLocales: [
+        const Locale('es')
+      ],
       debugShowCheckedModeBanner: false,
       title: 'MascotAyuda',
       theme: ThemeData(

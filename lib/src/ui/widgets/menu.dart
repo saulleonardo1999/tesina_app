@@ -7,8 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tesina/src/models/userModel.dart';
 import 'package:tesina/src/ui/auth/welcomePage.dart';
 import 'package:tesina/src/ui/cases/casesMap.dart';
-import 'package:tesina/src/ui/cases/event_charts_page.dart';
-import 'package:tesina/src/ui/cases/lostPetsPage.dart';
+import 'package:tesina/src/ui/cases/eventsPage.dart';
 import 'package:tesina/src/ui/cases/registerCase.dart';
 import 'package:tesina/src/ui/profile/profilePage.dart';
 class MenuWidget extends StatefulWidget {
@@ -157,25 +156,70 @@ class _MenuWidgetState extends State<MenuWidget> {
                       }
                   ),
                   options(
-                      Icon(Icons.warning_outlined),
-                      'Informes de eventos',
+                      Icon(Icons.warning_sharp),
+                      'Asalto',
                       (){
                         Navigator.pushAndRemoveUntil(
-                            context, MaterialPageRoute(builder: (context) => LostPetsPage()),
+                            context, MaterialPageRoute(builder: (context) => EventsPage(caseType: 1,)),
+                                (route) => false
+                        );
+                      }
+                  ),options(
+                      Icon(Icons.domain_disabled),
+                      'Robo de Propiedad',
+                      (){
+                        Navigator.pushAndRemoveUntil(
+                            context, MaterialPageRoute(builder: (context) => EventsPage(caseType: 2,)),
+                                (route) => false
+                        );
+                      }
+                  ),options(
+                      Icon(Icons.people_alt_outlined),
+                      'Acoso',
+                      (){
+                        Navigator.pushAndRemoveUntil(
+                            context, MaterialPageRoute(builder: (context) => EventsPage(caseType: 3,)),
+                                (route) => false
+                        );
+                      }
+                  ),options(
+                      Icon(Icons.money_off),
+                      'Fraude',
+                      (){
+                        Navigator.pushAndRemoveUntil(
+                            context, MaterialPageRoute(builder: (context) => EventsPage(caseType: 4,)),
+                                (route) => false
+                        );
+                      }
+                  ),options(
+                      Icon(Icons.electric_car),
+                      'Accidente Vehicular',
+                      (){
+                        Navigator.pushAndRemoveUntil(
+                            context, MaterialPageRoute(builder: (context) => EventsPage(caseType: 5,)),
+                                (route) => false
+                        );
+                      }
+                  ),options(
+                      Icon(Icons.announcement),
+                      'Sospechoso',
+                      (){
+                        Navigator.pushAndRemoveUntil(
+                            context, MaterialPageRoute(builder: (context) => EventsPage(caseType: 6,)),
                                 (route) => false
                         );
                       }
                   ),
-                  options(
-                      Icon(Icons.bar_chart),
-                      'Estadísticas de eventos',
-                      (){
-                        Navigator.pushAndRemoveUntil(
-                            context, MaterialPageRoute(builder: (context) => EventChartsPage()),
-                                (route) => false
-                        );
-                      }
-                  ),
+                  // options(
+                  //     Icon(Icons.bar_chart),
+                  //     'Estadísticas de eventos',
+                  //     (){
+                  //       Navigator.pushAndRemoveUntil(
+                  //           context, MaterialPageRoute(builder: (context) => EventChartsPage()),
+                  //               (route) => false
+                  //       );
+                  //     }
+                  // ),
                   options(
                       Icon(Icons.person),
                       'Mi perfil',

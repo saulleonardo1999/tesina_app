@@ -32,23 +32,23 @@ class _WelcomePageState extends State<WelcomePage> {
                 ),
               ),
             ),
-            FadeInDown(
-              delay: Duration(milliseconds: 500),
-              child: Container(
-                width: MediaQuery.of(context).size.width * .8,
-                padding: EdgeInsets.symmetric(vertical: 20),
-                child: Center(
-                  child: Text(
-                      "Tesina",
-                      style: new TextStyle(
-                          color: Colors.blueGrey,
-                          fontSize: MediaQuery.of(context).size.width * .07,
-                          fontWeight: FontWeight.bold)
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 70),
+            // FadeInDown(
+            //   delay: Duration(milliseconds: 500),
+            //   child: Container(
+            //     width: MediaQuery.of(context).size.width * .8,
+            //     padding: EdgeInsets.symmetric(vertical: 50),
+            //     child: Center(
+            //       child: Text(
+            //           "WarnApp!",
+            //           style: new TextStyle(
+            //               color: Colors.blueGrey.withOpacity(0.3),
+            //               fontSize: MediaQuery.of(context).size.width * .15,
+            //               fontWeight: FontWeight.bold)
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.15),
             FadeInLeft(
                 delay: Duration(milliseconds: 100),
                 child: optionButton(context, "Iniciar Sesión", 1)

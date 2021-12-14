@@ -21,7 +21,7 @@ class CaseProvider{
   }
   Future <List<CaseModel>> getCases() async {
     final url = "$_url/cases.json";
-    List<CaseModel> casesList = new List();
+    List<CaseModel> casesList = [];
     try{
       final resp = await http.get(url);
       final Map <String, dynamic> decodedData = json.decode(resp.body);
@@ -36,6 +36,7 @@ class CaseProvider{
         return [];
       }
     }catch(e){
+      print(e.toString());
       return [];
     }
   }

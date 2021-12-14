@@ -6,23 +6,38 @@ import 'package:tesina/src/ui/cases/caseCard.dart';
 import 'package:tesina/src/ui/widgets/menu.dart';
 import 'package:tesina/src/ui/widgets/noContentMessage.dart';
 
-class LostPetsPage extends StatefulWidget {
+class EventsPage extends StatefulWidget {
+  final int caseType;
+
+  const EventsPage({Key key, this.caseType}) : super(key: key);
   @override
-  _LostPetsPageState createState() => _LostPetsPageState();
+  _EventsPageState createState() => _EventsPageState();
 }
 
-class _LostPetsPageState extends State<LostPetsPage> {
-  List<CaseModel> myCases = [];
+class _EventsPageState extends State<EventsPage> {
+  List<CaseModel> myCases;
+  List<CaseModel> typeCases ;
+
   bool loading;
   @override
   void initState() {
+    myCases = [];
+    typeCases = [];
     loading = true;
     CaseProvider().getCases().then((value){
       myCases = value;
+      assignTypeCases();
       loading = false;
       setState(() {});
     });
     super.initState();
+  }
+  void assignTypeCases(){
+    myCases.forEach((element) {
+      if(element.type == widget.caseType){
+        typeCases.add(element);
+      }
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -41,16 +56,16 @@ class _LostPetsPageState extends State<LostPetsPage> {
             new AlwaysStoppedAnimation<Color>(Colors.blueGrey),
           ),
         ):
-        myCases.isNotEmpty ?
+        typeCases.isEmpty?
+        NoContentMessage(message: "No hay registros de Eventos",):
         ListView.builder(
-            itemCount: myCases.length,
+            itemCount: typeCases.length,
             itemBuilder: (context, index){
-              return
-              CaseCard(
-                myCase: myCases[index],
+              return CaseCard(
+                myCase: typeCases[index],
               );
             }
-        ): NoContentMessage(message: "No hay registros de Eventos",)
+        )
     );
   }
   @override

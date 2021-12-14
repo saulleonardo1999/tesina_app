@@ -11,10 +11,10 @@ class CaseModel {
     this.name,
     this.description,
     this.date,
-    this.photo,
     this.latitude,
     this.longitude,
-    this.location
+    this.location,
+    this.type
   });
 
   String id;
@@ -22,9 +22,9 @@ class CaseModel {
   String description;
   String date;
   String location;
-  String photo;
   String latitude;
   String longitude;
+  int type;
 
   factory CaseModel.fromJson(Map<String, dynamic> json) => CaseModel(
     id: json["id"],
@@ -32,9 +32,9 @@ class CaseModel {
     description: json["description"],
     date: json["date"],
     location: json["location"],
-    photo: json["photo"],
     latitude: json["latitude"],
     longitude: json["longitude"],
+    type: json['type']
   );
 
   Map<String, dynamic> toJson() => {
@@ -42,9 +42,9 @@ class CaseModel {
     "name": name,
     "description": description,
     "date": date,
-    "photo": photo,
     "latitude": latitude,
     "longitude": longitude,
-    "location" : location
+    "location" : location,
+    'type' : type
   };
 }

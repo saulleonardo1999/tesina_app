@@ -3,7 +3,7 @@
    <application
         android:label="tesina"
         android:icon="@mipmap/ic_launcher">
-       <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyDAspUDybCGqYXDZw1kcomLrbysCn2nvSY"/>
+       <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBKqQundPuHZAI1GFKKo9xpuxPa3QNI97k"/>
 
        <activity
             android:name=".MainActivity"

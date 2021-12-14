@@ -14,6 +14,8 @@ import 'package:tesina/src/models/caseModel.dart';
 import 'package:tesina/src/provider/caseProvider.dart';
 import 'package:tesina/src/ui/widgets/loadingAlertDismissible.dart';
 import 'package:tesina/src/ui/widgets/menu.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'casesMap.dart';
 
@@ -24,7 +26,7 @@ class RegisterCase extends StatefulWidget {
 
 class _RegisterCaseState extends State<RegisterCase> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController animalFieldController;
+  TextEditingController dateFieldController;
   TextEditingController descriptionFieldController;
   TextEditingController caseTypeFieldController;
   TextEditingController nameFieldController;
@@ -43,10 +45,12 @@ class _RegisterCaseState extends State<RegisterCase> {
   BuildContext loadingContext;
   CaseModel myCase;
   int caseType;
+  DateTime currentDate = DateTime.now();
+
   @override
   void initState() {
-    animalFieldController = new TextEditingController();
-    animalFieldController.clear();
+    dateFieldController = new TextEditingController();
+    dateFieldController.clear();
     addressFieldController = new TextEditingController();
     addressFieldController.clear();
     descriptionFieldController = new TextEditingController();
@@ -66,7 +70,7 @@ class _RegisterCaseState extends State<RegisterCase> {
     setState(() {
       position = LatLng(currentLocation.latitude, currentLocation.longitude);
       mapController.animateCamera(CameraUpdate.newCameraPosition(
-          CameraPosition(target: position, zoom: 16))
+          CameraPosition(target: position, zoom: 12.5))
       );
       coordinates = LatLng(position.latitude, position.longitude);
     });
@@ -92,7 +96,28 @@ class _RegisterCaseState extends State<RegisterCase> {
 
     return coordinates;
   }
-
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime pickedDate = await showDatePicker(
+        context: context,
+        initialDate: currentDate,
+        firstDate: DateTime(2015),
+        lastDate: DateTime(2050),
+        confirmText: "Seleccionar",
+        cancelText: "Cancelar",
+        helpText: "Selecciona la Fecha del Evento",
+        initialDatePickerMode: DatePickerMode.day,
+        initialEntryMode: DatePickerEntryMode.calendar,
+        locale: Locale.fromSubtags(
+          languageCode: 'es'
+        )
+    );
+    if (pickedDate != null && pickedDate != currentDate)
+      setState(() {
+        currentDate = pickedDate;
+        DateFormat dateFormat = DateFormat.yMMMMd('es');
+        this.dateFieldController.text = dateFormat.format(currentDate);
+      });
+  }
   Widget createTextLabel(String text) {
     return Container(
       width: MediaQuery.of(context).size.width * .84,
@@ -128,18 +153,13 @@ class _RegisterCaseState extends State<RegisterCase> {
               children: [
                 SizedBox(height: 30,),
                 FadeInLeft(
-                    delay: Duration(milliseconds: 150),
-                    child: nameInput()
+                    delay: Duration(milliseconds: 300),
+                    child: eventTitleInput()
                 ),
                 SizedBox(height: 30,),
                 FadeInRight(
                     delay: Duration(milliseconds: 300),
-                    child: animalInput()
-                ),
-                SizedBox(height: 30,),
-                FadeInLeft(
-                    delay: Duration(milliseconds: 150),
-                    child: descriptionInput()
+                    child: dateCaseInput()
                 ),
                 SizedBox(height: 30,),
                 FadeInRight(
@@ -147,90 +167,99 @@ class _RegisterCaseState extends State<RegisterCase> {
                     child: addressInput()
                 ),
                 SizedBox(height: 30,),
-                FadeInDown(
-                  delay: Duration(milliseconds: 200),
-                  child: Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: <Widget>[
-                      Column(
-                        children: [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          createTextLabel('Foto del evento'),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Center(
-                            child: InkWell(
-                              onTap: () {
-                                _optionsPicture();
-                              },
-                              child: Container(
-                                padding: EdgeInsets.all(15),
-                                width: MediaQuery.of(context).size.width*0.85,
-                                height: MediaQuery.of(context).size.width*0.5,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.white,
-                                    border: Border.all(
-                                        color: Colors.black.withOpacity(0.4),
-                                        width: 1
-                                    )
-                                  //  shape: BoxShape.circle,
-                                ),
-                                child: fileImage == null
-                                    ?
-                                Icon(
-                                  Icons.car_repair,
-                                  color: Colors.black,
-                                  size: MediaQuery.of(context).size.width*0.35,
-                                )
-                                    :
-                                Image.memory(
-                                  fileImage,
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.only(
-                                right: MediaQuery.of(context).size.width*0.12,
-                                bottom: 10
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey,
-                                  blurRadius: 5.0,
-                                ),
-                              ],
-                              shape: BoxShape.circle,
-                            ),
-                            child: IconButton(
-                              splashColor: Colors.transparent,
-                              onPressed: () {
-                                _optionsPicture();
-                              },
-                              icon: Icon(
-                                Icons.add_a_photo,
-                                color: Colors.black,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
+                FadeInRight(
+                    delay: Duration(milliseconds: 300),
+                    child: caseInput()
                 ),
+                SizedBox(height: 30,),
+                FadeInLeft(
+                    delay: Duration(milliseconds: 300),
+                    child: descriptionInput()
+                ),
+                // FadeInDown(
+                //   delay: Duration(milliseconds: 200),
+                //   child: Stack(
+                //     alignment: Alignment.bottomCenter,
+                //     children: <Widget>[
+                //       Column(
+                //         children: [
+                //           SizedBox(
+                //             height: 10,
+                //           ),
+                //           createTextLabel('Foto del evento'),
+                //           SizedBox(
+                //             height: 10,
+                //           ),
+                //           Center(
+                //             child: InkWell(
+                //               onTap: () {
+                //                 _optionsPicture();
+                //               },
+                //               child: Container(
+                //                 padding: EdgeInsets.all(15),
+                //                 width: MediaQuery.of(context).size.width*0.85,
+                //                 height: MediaQuery.of(context).size.width*0.5,
+                //                 decoration: BoxDecoration(
+                //                     borderRadius: BorderRadius.circular(10),
+                //                     color: Colors.white,
+                //                     border: Border.all(
+                //                         color: Colors.black.withOpacity(0.4),
+                //                         width: 1
+                //                     )
+                //                   //  shape: BoxShape.circle,
+                //                 ),
+                //                 child: fileImage == null
+                //                     ?
+                //                 Icon(
+                //                   Icons.car_repair,
+                //                   color: Colors.black,
+                //                   size: MediaQuery.of(context).size.width*0.35,
+                //                 )
+                //                     :
+                //                 Image.memory(
+                //                   fileImage,
+                //                   fit: BoxFit.contain,
+                //                 ),
+                //               ),
+                //             ),
+                //           ),
+                //         ],
+                //       ),
+                //       Row(
+                //         crossAxisAlignment: CrossAxisAlignment.center,
+                //         mainAxisAlignment: MainAxisAlignment.end,
+                //         children: <Widget>[
+                //           Container(
+                //             margin: EdgeInsets.only(
+                //                 right: MediaQuery.of(context).size.width*0.12,
+                //                 bottom: 10
+                //             ),
+                //             decoration: BoxDecoration(
+                //               color: Colors.white,
+                //               boxShadow: [
+                //                 BoxShadow(
+                //                   color: Colors.grey,
+                //                   blurRadius: 5.0,
+                //                 ),
+                //               ],
+                //               shape: BoxShape.circle,
+                //             ),
+                //             child: IconButton(
+                //               splashColor: Colors.transparent,
+                //               onPressed: () {
+                //                 _optionsPicture();
+                //               },
+                //               icon: Icon(
+                //                 Icons.add_a_photo,
+                //                 color: Colors.black,
+                //               ),
+                //             ),
+                //           )
+                //         ],
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 SizedBox(height: MediaQuery.of(context).size.height * .2,),
               ],
             ),
@@ -275,65 +304,73 @@ class _RegisterCaseState extends State<RegisterCase> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
-  Widget animalInput() {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          SizedBox(
-            height: 10,
-          ),
-          createTextLabel('Fecha'),
-          SizedBox(
-            height: 10,
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width * .84,
-            color: Colors.transparent,
-            child: new TextFormField(
-              enabled: true,
-              cursorColor: Colors.blueGrey,
-              style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black.withOpacity(0.7)),
-              controller: animalFieldController,
-              validator: (text){
-                if(animalFieldController.text.isEmpty){
-                  return "Llenar Campo";
-                }else{
-                  return null;
-                }
-              },
-              keyboardType: TextInputType.name,
-              textCapitalization: TextCapitalization.words,
-              decoration: new InputDecoration(
-                errorStyle: TextStyle(color: Colors.red, fontSize: 15),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blueGrey, width: 1.0),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.red, width: 1.0),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                      color: Colors.black.withOpacity(0.4), width: 1.0),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.red, width: 1.0),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                hintStyle: TextStyle(color: Colors.black),
-                prefixIcon: new Icon(
-                  Icons.date_range,
-                  color: Colors.blueGrey,
+  Widget dateCaseInput() {
+    return GestureDetector(
+      onTap: () => _selectDate(context),
+      child: Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+              height: 10,
+            ),
+            createTextLabel('Fecha'),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width * .84,
+              color: Colors.transparent,
+              child: new TextFormField(
+                enabled: false,
+                cursorColor: Colors.blueGrey,
+                style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black.withOpacity(0.7)),
+                controller: dateFieldController,
+                validator: (text){
+                  if(dateFieldController.text.isEmpty){
+                    return "Llenar Campo";
+                  }else{
+                    return null;
+                  }
+                },
+                keyboardType: TextInputType.name,
+                textCapitalization: TextCapitalization.words,
+                decoration: new InputDecoration(
+                  errorStyle: TextStyle(color: Colors.red, fontSize: 15),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blueGrey, width: 1.0),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.red, width: 1.0),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Colors.black.withOpacity(0.4), width: 1.0),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  disabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Colors.black.withOpacity(0.4), width: 1.0),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.red, width: 1.0),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  hintStyle: TextStyle(color: Colors.black),
+                  prefixIcon: new Icon(
+                    Icons.date_range,
+                    color: Colors.blueGrey,
+                  ),
                 ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
@@ -404,7 +441,7 @@ class _RegisterCaseState extends State<RegisterCase> {
       ),
     );
   }
-  Widget nameInput() {
+  Widget eventTitleInput() {
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -532,7 +569,7 @@ class _RegisterCaseState extends State<RegisterCase> {
                                   Center(
                                       child: Container(
                                         child: Text(
-                                            "Rescate"),
+                                            "Asalto"),
                                         margin:
                                         EdgeInsets.symmetric(vertical: 5),
                                       )
@@ -540,7 +577,7 @@ class _RegisterCaseState extends State<RegisterCase> {
                                 Center(
                                     child: Container(
                                       child: Text(
-                                          "Perdidos"),
+                                          "Robo de Propiedad"),
                                       margin:
                                       EdgeInsets.symmetric(vertical: 5),
                                     )
@@ -548,7 +585,31 @@ class _RegisterCaseState extends State<RegisterCase> {
                                 Center(
                                     child: Container(
                                       child: Text(
-                                          "Vistos"),
+                                          "Acoso"),
+                                      margin:
+                                      EdgeInsets.symmetric(vertical: 5),
+                                    )
+                                ),
+                                Center(
+                                    child: Container(
+                                      child: Text(
+                                          "Fraude"),
+                                      margin:
+                                      EdgeInsets.symmetric(vertical: 5),
+                                    )
+                                ),
+                                Center(
+                                    child: Container(
+                                      child: Text(
+                                          "Accidente Vehicular"),
+                                      margin:
+                                      EdgeInsets.symmetric(vertical: 5),
+                                    )
+                                ),
+                                Center(
+                                    child: Container(
+                                      child: Text(
+                                          "Sospechoso"),
                                       margin:
                                       EdgeInsets.symmetric(vertical: 5),
                                     )
@@ -560,15 +621,27 @@ class _RegisterCaseState extends State<RegisterCase> {
                                   switch (index){
                                     case 0:
                                       caseType = 1;
-                                      caseTypeFieldController.text = "Rescate";
+                                      caseTypeFieldController.text = "Asalto";
                                       break;
                                     case 1:
                                       caseType = 2;
-                                      caseTypeFieldController.text = "Perdidos";
+                                      caseTypeFieldController.text = "Robo de Propiedad";
                                       break;
                                     case 2:
                                       caseType = 3;
-                                      caseTypeFieldController.text = "Vistos";
+                                      caseTypeFieldController.text = "Acoso";
+                                      break;
+                                    case 3:
+                                      caseType = 4;
+                                      caseTypeFieldController.text = "Fraude";
+                                      break;
+                                    case 4:
+                                      caseType = 5;
+                                      caseTypeFieldController.text = "Accidente Vehicular";
+                                      break;
+                                    case 5:
+                                      caseType = 6;
+                                      caseTypeFieldController.text = "Sospechoso";
                                       break;
                                   }
                                 });
@@ -638,6 +711,7 @@ class _RegisterCaseState extends State<RegisterCase> {
       ),
     );
   }
+
   Widget addressInput() {
     return Container(
       child: Column(
@@ -841,7 +915,7 @@ class _RegisterCaseState extends State<RegisterCase> {
                         markers: markers,
                         initialCameraPosition: CameraPosition(
                           target: position,
-                          zoom: 12.0,
+                          zoom: 3.0,
                         ),
                       ),
                       Positioned(
@@ -911,15 +985,15 @@ class _RegisterCaseState extends State<RegisterCase> {
             text: "Cargando...",
           );
         });
-    if(_formKey.currentState.validate() && _image!=null){
+    if(_formKey.currentState.validate()){
       myCase = new CaseModel(
         name: nameFieldController.text,
-        photo: _image,
-        date: animalFieldController.text,
+        date: dateFieldController.text,
         description: descriptionFieldController.text,
         latitude: markerPosition.latitude.toString(),
         longitude: markerPosition.longitude.toString(),
-        location: addressFieldController.text
+        location: addressFieldController.text,
+        type: caseType
       );
       CaseProvider().registerCase(myCase).then((value){
         if(value != null){

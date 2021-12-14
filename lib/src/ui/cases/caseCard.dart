@@ -13,13 +13,13 @@ class CaseCard extends StatefulWidget {
 
 class _CaseCardState extends State<CaseCard> {
   String location;
-  Uint8List photo;
+  // Uint8List photo;
   @override
   void initState() {
     location = " ";
-    try{
-      photo = base64Decode(widget.myCase.photo);
-    }catch(e){}
+    // try{
+    //   photo = base64Decode(widget.myCase.photo);
+    // }catch(e){}
     _getLocation();
     super.initState();
   }
@@ -96,7 +96,9 @@ class _CaseCardState extends State<CaseCard> {
                       style: TextStyle(
                           color: Colors.black.withOpacity(0.3),
                           fontSize: MediaQuery.of(context).size.width*0.032,
-                          fontWeight: FontWeight.bold),
+                          fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.justify,
                     ),
                     color: Colors.transparent,
                   ),
@@ -203,22 +205,64 @@ class _CaseCardState extends State<CaseCard> {
             thickness: 1.0,
           ),
           Container(
-            padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width*0.075,
-                vertical: 20
-            ),
               width: MediaQuery.of(context).size.width - 40,
-              height: MediaQuery.of(context).size.height*0.3,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.transparent),
-            child: Image(
-              height: MediaQuery.of(context).size.height*0.2,
-              image: MemoryImage(
-                this.photo
-              ),
-            ),
-          )
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    child: Text(
+                      "Tipo de Caso",
+                      style: TextStyle(
+                          color: Colors.black.withOpacity(0.3),
+                          fontSize: MediaQuery.of(context).size.width*0.032,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    color: Colors.transparent,
+                  ),
+                  Container(
+                    padding:
+                    EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    child: Text(
+                      widget.myCase.type == 1 ? "Asalto" :
+                      widget.myCase.type == 2 ? "Robo de Propiedad" :
+                      widget.myCase.type == 3 ? "Acoso" :
+                      widget.myCase.type == 4 ? "Fraude" :
+                      widget.myCase.type == 5 ? "Accidente Vehicular" :
+                      widget.myCase.type == 6 ? "Sospechoso" : "N/A",
+                      style: TextStyle(
+                          color: Colors.black.withOpacity(0.7),
+                          fontSize: MediaQuery.of(context).size.width*0.035,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    color: Colors.transparent,
+                  )
+                ],
+              )
+          ),
+          SizedBox(height: 20,)
+          // Container(
+          //   padding: EdgeInsets.symmetric(
+          //       horizontal: MediaQuery.of(context).size.width*0.075,
+          //       vertical: 20
+          //   ),
+          //     width: MediaQuery.of(context).size.width - 40,
+          //     height: MediaQuery.of(context).size.height*0.3,
+          //     decoration: BoxDecoration(
+          //         borderRadius: BorderRadius.circular(10),
+          //         color: Colors.transparent),
+          //   child: Image(
+          //     height: MediaQuery.of(context).size.height*0.2,
+          //     image: MemoryImage(
+          //       this.photo
+          //     ),
+          //   ),
+          // )
         ],
       ),
     );

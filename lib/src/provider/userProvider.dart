@@ -12,8 +12,6 @@ class UserProvider{
       final resp = await http.post(url, body: userModelToJson(user));
 
       final decodedData = json.decode(resp.body);
-      print(decodedData['name']);
-      print(resp.statusCode);
       if(resp.statusCode == 200){
         return decodedData['name'];
       }else{

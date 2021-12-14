@@ -20,6 +20,7 @@ class _CasesMapState extends State<CasesMap> with SingleTickerProviderStateMixin
   LatLng position = new LatLng(23.8524981, -103.1033665);
   LatLng technicianPosition;
   Position currentLocation;
+  TabController _tabController;
   String lat, lng;
   LocationOptions locationOptions = LocationOptions(accuracy: LocationAccuracy.best, distanceFilter: 5);
   String _geoHash ;
@@ -37,7 +38,7 @@ class _CasesMapState extends State<CasesMap> with SingleTickerProviderStateMixin
       lng = (currentLocation.longitude).toString();
       position = LatLng(currentLocation.latitude, currentLocation.longitude);
       mapController.animateCamera(CameraUpdate.newCameraPosition(
-          CameraPosition(target: position, zoom: 16))
+          CameraPosition(target: position, zoom: 12.5))
       );
       coordinates = LatLng(position.latitude, position.longitude);
     });
@@ -58,7 +59,7 @@ class _CasesMapState extends State<CasesMap> with SingleTickerProviderStateMixin
 
       coordinates = LatLng(position.latitude, position.longitude);
       mapController.animateCamera(CameraUpdate.newCameraPosition(
-          CameraPosition(target: position, zoom: 16))
+          CameraPosition(target: position, zoom: 12.5))
       );
       return coordinates;
     });
@@ -72,6 +73,7 @@ class _CasesMapState extends State<CasesMap> with SingleTickerProviderStateMixin
   void initState() {
     loading = true;
     indexCases = 1;
+    _tabController = new TabController(vsync: this, length: 6);
     _getLocation();
     CaseProvider().getCases().then((value){
       myCases = value;
@@ -85,15 +87,17 @@ class _CasesMapState extends State<CasesMap> with SingleTickerProviderStateMixin
     markers.clear();
     myCases.forEach((element) {
       setState(() {
-        Marker resultMarker = Marker(
-          markerId: MarkerId(element.id),
-          onTap: (){
-            showCaseInformation(element);
-          },
-          position: LatLng(double.tryParse(element.latitude),
-              double.tryParse(element.longitude)),
-        );
-        markers.add(resultMarker);
+        if(element.type == indexCases){
+          Marker resultMarker = Marker(
+            markerId: MarkerId(element.id),
+            onTap: (){
+              showCaseInformation(element);
+            },
+            position: LatLng(double.tryParse(element.latitude),
+                double.tryParse(element.longitude)),
+          );
+          markers.add(resultMarker);
+        }
       });
 
     });
@@ -121,6 +125,54 @@ class _CasesMapState extends State<CasesMap> with SingleTickerProviderStateMixin
       appBar: AppBar(
         title: Text("Mapa de casos"),
         centerTitle: true,
+        bottom: TabBar(
+          isScrollable: true,
+          unselectedLabelColor: Colors.white.withOpacity(0.3),
+          indicatorColor: Colors.white,
+          onTap: (index){
+            indexCases = index+1;
+            fillMarkers();
+          },
+          controller: _tabController,
+          tabs: [
+            Tab(
+              child: Text('Asalto',
+                  style: TextStyle(
+                    color: Colors.white,
+                  )),
+            ),
+            Tab(
+              child: Text('Robo de Propiedad',
+                  style: TextStyle(
+                    color: Colors.white,
+                  )),
+            ),
+            Tab(
+              child: Text('Acoso',
+                  style: TextStyle(
+                    color: Colors.white,
+                  )),
+            ),
+            Tab(
+              child: Text('Fraude',
+                  style: TextStyle(
+                    color: Colors.white,
+                  )),
+            ),
+            Tab(
+              child: Text('Accidente Vehicular',
+                  style: TextStyle(
+                    color: Colors.white,
+                  )),
+            ),
+            Tab(
+              child: Text('Sospechoso',
+                  style: TextStyle(
+                    color: Colors.white,
+                  )),
+            )
+          ],
+        ),
       ),
       body:
       GoogleMap(
